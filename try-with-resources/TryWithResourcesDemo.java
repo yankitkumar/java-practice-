@@ -1,64 +1,36 @@
 public class TryWithResourcesDemo {
 
-    // A resource is any class with a close() method (it implements AutoCloseable)
-    static class DatabaseConnection implements AutoCloseable {
-        DatabaseConnection() {
-            System.out.println("1. Connection opened");
-        }
-        void query(String sql) {
-            System.out.println("2. Running: " + sql);
-        }
-        @Override
-        public void close() {
-            System.out.println("3. Connection closed");
-        }
-    }
-
+    // Anything with a close() method can go inside try ( ... )
     static class Resource implements AutoCloseable {
-        private final String name;
-        private final boolean failOnClose;
-        Resource(String name, boolean failOnClose) {
-            this.name = name;
-            this.failOnClose = failOnClose;
-            System.out.println("open " + name);
+        private final int number;
+
+        Resource(int number) {
+            this.number = number;
+            System.out.println("Open " + number);
         }
+
         @Override
         public void close() {
-            System.out.println("close " + name);
-            if (failOnClose) throw new IllegalStateException("could not close " + name);
+            System.out.println("Close " + number);
         }
     }
 
     public static void main(String[] args) {
 
-        System.out.println("--- Example 1: everything works ---");
-        try (DatabaseConnection conn = new DatabaseConnection()) {
-            conn.query("SELECT * FROM accounts");
-        }   // Java calls conn.close() here for you
+        System.out.println("--- Example 1 ---");
+        try (Resource one = new Resource(1);
+             Resource two = new Resource(2)) {
+            System.out.println("Using 1 and 2");
+        }   // Java closes them here: 2 first, then 1
 
         System.out.println();
-        System.out.println("--- Example 2: an error happens ---");
-        try (DatabaseConnection conn = new DatabaseConnection()) {
-            conn.query("SELECT * FROM accounts");
-            throw new RuntimeException("query failed");
-        } catch (RuntimeException e) {
-            System.out.println("4. Caught: " + e.getMessage());
-        }
-
-        System.out.println();
-        System.out.println("--- Example 3: two resources ---");
-        try (Resource connection = new Resource("connection", false);
-             Resource statement = new Resource("statement", false)) {
-            System.out.println("using both");
-        }
-
-        System.out.println();
-        System.out.println("--- Example 4: the code fails AND close() fails ---");
-        try (Resource connection = new Resource("connection", true)) {
-            throw new RuntimeException("query failed");
+        System.out.println("--- Example 2: with an error ---");
+        try (Resource one = new Resource(1);
+             Resource two = new Resource(2)) {
+            System.out.println("Using 1 and 2");
+            throw new RuntimeException("Something went wrong");
         } catch (RuntimeException e) {
             System.out.println("Caught: " + e.getMessage());
-            System.out.println("Suppressed: " + e.getSuppressed()[0].getMessage());
         }
     }
 }
