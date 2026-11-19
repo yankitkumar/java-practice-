@@ -47,6 +47,31 @@ List<Item> l1 = List.of(
 | 9 | Total price per category | `groupingBy`, `summingDouble` |
 | 10 | All items across departments, cheapest first **(interview question)** | `flatMap` |
 
+## More practice: flatMap
+
+`FlatMapExercises.java` has 10 more exercises that only practice `flatMap`, from flattening a list of lists up to going two levels deep. Run it the same way:
+
+```bash
+java FlatMapExercises.java
+```
+
+Answers are in `FlatMapSolutions.java`.
+
+| # | Task |
+| --- | --- |
+| 1 | Flatten `[[1, 2], [3, 4], [5]]` into one list |
+| 2 | Sum every number in the nested list |
+| 3 | All item names across all departments |
+| 4 | Total price across all departments, as an `Integer` **(interview style)** |
+| 5 | Items over 20 across all departments |
+| 6 | Count all items across all departments |
+| 7 | Split sentences into unique words **(classic interview question)** |
+| 8 | Most expensive item across all departments |
+| 9 | Build `"Department: Item"` for every item |
+| 10 | Stores → departments → items (two levels deep) |
+
+Tip: if VS Code suggests something like `StreamSolutions.Item::getName`, pick plain `Item::getName` instead. Each file has its own `Item` class.
+
 ## Cheat sheet
 
 | Operation | What it does |
